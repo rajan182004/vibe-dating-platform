@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { truthQuestions, dareQuestions } from '../../database/seeds/questions.js';
+import { truthQuestions, dareQuestions } from './questions.js';
 
 
 // In-memory storage (we'll replace with database later)
