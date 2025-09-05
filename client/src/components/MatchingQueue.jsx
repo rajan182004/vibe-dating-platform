@@ -8,7 +8,7 @@ function MatchingQueue({ user, onMatchFound }) {
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io('http://localhost:5000');
+    const newSocket = io('https://vibe-dating-platform-production.up.railway.app');
     setSocket(newSocket);
 
     // Listen for match found

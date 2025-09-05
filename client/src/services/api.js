@@ -1,27 +1,19 @@
 import axios from 'axios';
 
-// Create axios instance with base URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://vibe-dating-platform-production.up.railway.app/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add token to requests if it exists
+// Add request interceptor to include auth token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
-
-// Auth API calls
-export const authAPI = {
-  register: (userData) => api.post('/auth/register', userData),
-  login: (credentials) => api.post('/auth/login', credentials),
-  test: () => api.get('/test'),
-};
 
 export default api;
