@@ -7,7 +7,6 @@ import authRoutes from './routes/auth.js';
 import gameRoutes from './routes/game.js';
 import { createGame, getRandomQuestion } from './controllers/gameController.js';
 
-
 // Load environment variables
 dotenv.config();
 
@@ -15,13 +14,17 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
@@ -147,12 +150,9 @@ io.on('connection', (socket) => {
   });
 });
 
-
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Vibe server running on port ${PORT}`);
-  console.log(`📱 Frontend: http://localhost:5173`);
-  console.log(`🔧 Backend: http://localhost:${PORT}`);
-  console.log(`🧪 Test endpoint: http://localhost:${PORT}/api/test`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
 });
