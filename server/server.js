@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Rest of the socket handlers stay the same
+  // Handle game events
   socket.on('join-game', (data) => {
     socket.join(data.gameId);
     console.log(`User ${data.userId} joined game ${data.gameId}`);
@@ -141,6 +141,24 @@ io.on('connection', (socket) => {
     });
   });
 
+  // Handle video chat signaling - THESE MUST BE INSIDE THE CONNECTION HANDLER
+  socket.on('video-signal', (data) => {
+    console.log(`Video signal from ${socket.id} to ${data.to} in game ${data.gameId}`);
+    
+    // Forward signal to the target user
+    socket.to(data.gameId).emit('video-signal', {
+      gameId: data.gameId,
+      signal: data.signal,
+      from: socket.id
+    });
+  });
+
+  // Handle video chat connection status
+  socket.on('video-connected', (data) => {
+    console.log(`Video connected in game ${data.gameId}`);
+    socket.to(data.gameId).emit('video-connected', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     
@@ -155,21 +173,4 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Vibe server running on port ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
-});
-// Handle video chat signaling
-socket.on('video-signal', (data) => {
-  console.log(`Video signal from ${socket.id} to ${data.to} in game ${data.gameId}`);
-  
-  // Forward signal to the target user
-  socket.to(data.gameId).emit('video-signal', {
-    gameId: data.gameId,
-    signal: data.signal,
-    from: socket.id
-  });
-});
-
-// Handle video chat connection status
-socket.on('video-connected', (data) => {
-  console.log(`Video connected in game ${data.gameId}`);
-  socket.to(data.gameId).emit('video-connected', data);
 });
