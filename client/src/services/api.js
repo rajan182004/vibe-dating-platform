@@ -16,4 +16,10 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Create authAPI object for backward compatibility
+export const authAPI = {
+  register: (userData) => api.post('/auth/register', userData),
+  login: (userData) => api.post('/auth/login', userData),
+};
+
 export default api;

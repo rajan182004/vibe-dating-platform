@@ -1,25 +1,49 @@
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import AuthForm from './components/AuthForm';
+import Dashboard from './components/Dashboard';
+import './App.css';
 
-const api = axios.create({
-  baseURL: 'https://vibe-dating-platform-production.up.railway.app/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-// Add request interceptor to include auth token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  useEffect(() => {
+    try {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error);
+      localStorage.removeItem('user');
+    }
+    setLoading(false);
+  }, []);
+
+  const handleAuthSuccess = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  return config;
-});
 
-// Create authAPI object for backward compatibility
-export const authAPI = {
-  register: (userData) => api.post('/auth/register', userData),
-  login: (userData) => api.post('/auth/login', userData),
-};
+  return (
+    <div className="App">
+      {user ? (
+        <Dashboard user={user} onLogout={handleLogout} />
+      ) : (
+        <AuthForm onSuccess={handleAuthSuccess} />
+      )}
+    </div>
+  );
+}
 
-export default api;
+export default App;
