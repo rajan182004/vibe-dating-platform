@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import VideoChat from './VideoChat';
 
 function GameInterface({ gameData, user, onGameEnd }) {
   const [socket, setSocket] = useState(null);
@@ -8,10 +9,11 @@ function GameInterface({ gameData, user, onGameEnd }) {
   const [gamePhase, setGamePhase] = useState('choose'); // 'choose', 'question', 'answer'
   const [answer, setAnswer] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
+  const [showVideoChat, setShowVideoChat] = useState(false);
 
   useEffect(() => {
     // Initialize socket connection
-const newSocket = io('https://vibe-dating-platform-production.up.railway.app');
+    const newSocket = io('https://vibe-dating-platform-production.up.railway.app');
     setSocket(newSocket);
 
     // Join the game room
@@ -74,10 +76,20 @@ const newSocket = io('https://vibe-dating-platform-production.up.railway.app');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
+      <div className="max-w-6xl mx-auto">
+        {/* Header with Video Chat Toggle */}
         <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-6 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">🎮 Truth or Dare</h1>
+          <div className="flex justify-between items-center mb-4">
+            <div></div>
+            <h1 className="text-3xl font-bold text-white">🎮 Truth or Dare</h1>
+            <button 
+              onClick={() => setShowVideoChat(!showVideoChat)}
+              className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 transform hover:scale-105"
+            >
+              {showVideoChat ? '📱 Hide Video' : '🎥 Start Video Chat'}
+            </button>
+          </div>
+          
           <p className="text-white/80">Playing with: {gameData.opponent}</p>
           <div className="mt-4">
             {isMyTurn ? (
@@ -92,7 +104,20 @@ const newSocket = io('https://vibe-dating-platform-production.up.railway.app');
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        {/* Video Chat Section */}
+        {showVideoChat && (
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-6">
+            <h2 className="text-xl font-bold text-white mb-4 text-center">📹 Video Chat</h2>
+            <VideoChat 
+              socket={socket}
+              user={user}
+              gameId={gameData.gameId}
+              opponentId={gameData.opponent}
+            />
+          </div>
+        )}
+
+        <div className="grid lg:grid-cols-2 gap-6">
           {/* Game Area */}
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6">
             {gamePhase === 'choose' && isMyTurn && (
