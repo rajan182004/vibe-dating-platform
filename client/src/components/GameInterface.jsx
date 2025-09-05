@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import VideoChat from './VideoChat';
+// import VideoChat from './VideoChat';
 
 function GameInterface({ gameData, user, onGameEnd }) {
   const [socket, setSocket] = useState(null);
@@ -105,7 +105,7 @@ function GameInterface({ gameData, user, onGameEnd }) {
         </div>
 
         {/* Video Chat Section */}
-        {showVideoChat && (
+        {/* {showVideoChat && (
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 mb-6">
             <h2 className="text-xl font-bold text-white mb-4 text-center">📹 Video Chat</h2>
             <VideoChat 
@@ -115,7 +115,7 @@ function GameInterface({ gameData, user, onGameEnd }) {
               opponentId={gameData.opponent}
             />
           </div>
-        )}
+        )} */}
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Game Area */}
