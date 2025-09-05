@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# lock files
+package-lock.json
+client/package-lock.json
+server/package-lock.json
+
+# build output
+dist/
+build/
+client/dist/
+client/build/
+server/build/
+server/dist/
+
+# misc
+*.log
+.env
+*.env
+.vscode/
